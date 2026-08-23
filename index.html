@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0d">
+<title>SONORA — YouTube Music Style</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0b0d;color:#f7f7f8;font-family:Arial,system-ui,sans-serif}
+button,input{font:inherit}button{cursor:pointer}.app{padding-bottom:100px}
+header{position:sticky;top:0;z-index:10;background:#0b0b0df2;backdrop-filter:blur(18px);border-bottom:1px solid #222;padding:13px 15px}
+.head{max-width:1150px;margin:auto;display:flex;align-items:center;gap:12px}.logo{font-weight:900;font-size:23px}.logo span{color:#ff355d}
+.search{flex:1;max-width:650px;background:#19191d;border:1px solid #303036;color:#fff;border-radius:22px;padding:11px 17px;outline:none}.search:focus{border-color:#777}
+main{max-width:1150px;margin:auto;padding:20px 15px}.tabs{display:flex;gap:9px;overflow:auto;margin-bottom:20px}.tab{border:0;background:#202024;color:#ddd;padding:9px 16px;border-radius:9px;white-space:nowrap}.tab.active{background:#fff;color:#111}
+.hero{border-radius:20px;padding:25px;background:linear-gradient(110deg,#2b1620,#171317 55%,#101012);margin-bottom:28px}.hero small{color:#ff7b94;font-weight:800}.hero h1{font-size:clamp(28px,6vw,48px);margin:8px 0}.hero p{color:#aaa;max-width:620px}.btn{border:0;border-radius:999px;padding:11px 18px;font-weight:800}.white{background:#fff;color:#111}.dark{background:#ffffff16;color:#fff;margin-left:6px}
+h2{font-size:21px;margin:25px 0 13px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:#121215;border-radius:14px;overflow:hidden}.thumb{aspect-ratio:16/9;background:#24242a;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.duration{position:absolute;right:6px;bottom:6px;background:#000c;border-radius:4px;padding:2px 5px;font-size:11px}.info{padding:11px}.info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.info small{display:block;color:#999;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card button{margin:0 11px 11px;width:calc(100% - 22px);background:#25252b;border:0;color:#fff;border-radius:9px;padding:8px}
+.list{border:1px solid #252529;border-radius:14px;overflow:hidden}.row{display:grid;grid-template-columns:48px 1fr auto;gap:11px;align-items:center;padding:10px;border-bottom:1px solid #222}.row:last-child{border:0}.mini{width:48px;height:48px;border-radius:7px;object-fit:cover;background:#222}.row b,.row small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row small{color:#999;margin-top:4px}.row button{border:0;background:#25252b;color:#fff;border-radius:9px;padding:8px 11px}
+.empty{text-align:center;padding:40px;color:#888}
+.player{position:fixed;bottom:0;left:0;right:0;background:#121215f7;backdrop-filter:blur(18px);border-top:1px solid #2b2b2f;z-index:20}.playerin{max-width:1150px;margin:auto;min-height:82px;display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:center;gap:15px;padding:8px 14px}.now{display:flex;gap:10px;align-items:center;min-width:0}.art{width:52px;height:52px;border-radius:7px;background:#29292e;overflow:hidden;flex:none}.art img{width:100%;height:100%;object-fit:cover}.now b,.now small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.now small{color:#999;margin-top:3px}.controls{text-align:center}.controls button{background:none;border:0;color:#eee;font-size:20px;margin:0 5px}.controls .play{background:#fff;color:#111;border-radius:50%;width:40px;height:40px}.bar{width:100%;accent-color:#ff315c}.right{text-align:right;color:#999}
+@media(max-width:600px){.playerin{grid-template-columns:1fr auto}.right{display:none}.controls button{margin:0 2px}.hero{padding:20px}.logo{font-size:19px}.search{min-width:0}.head>button{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="head"><div class="logo">SONORA <span>●</span></div><input id="search" class="search" placeholder="Cari lagu, artis, album..." onkeydown="if(event.key==='Enter')ytSearch(this.value)"><button onclick="ytSearch(document.getElementById('search').value)" style="border:0;background:#222;color:#fff;border-radius:50%;width:40px;height:40px">⌕</button></div></header>
+<main>
+<div class="tabs"><button class="tab active" onclick="home()">Beranda</button><button class="tab" onclick="quick('Indonesia')">🇮🇩 Indonesia</button><button class="tab" onclick="quick('Indonesia terbaru')">Baru Rilis</button><button class="tab" onclick="quick('international hits')">🌎 International</button><button class="tab" onclick="quick('chill music')">Santai</button></div>
+<section class="hero"><small>SONORA × YOUTUBE</small><h1>Musik favoritmu,<br>lebih mudah dicari.</h1><p>Cari jutaan video musik YouTube dari SONORA. Hasil akan dibuka menggunakan pemutar YouTube resmi.</p><button class="btn white" onclick="ytSearch('lagu Indonesia terbaru')">▶ Cari musik Indonesia</button><button class="btn dark" onclick="ytSearch('top songs 2026')">Top Hits</button></section>
+<h2 id="heading">Cari musik di YouTube</h2>
+<div id="results" class="grid"></div>
+<h2>Playlist cepat</h2><div id="list" class="list"></div>
+</main>
+</div>
+<div class="player"><div class="playerin">
+<div class="now"><div class="art" id="art"></div><div><b id="pt">Belum memilih lagu</b><small id="pa">Klik hasil pencarian untuk membuka YouTube</small></div></div>
+<div class="controls"><button onclick="previous()">↶</button><button class="play" onclick="playCurrent()">▶</button><button onclick="next()">↷</button><br><input class="bar" type="range" min="0" max="100" value="0" disabled></div>
+<div class="right">YouTube</div>
+</div></div>
+<script>
+let results=[], index=-1;
+const seed=[
+ ["Hati-Hati di Jalan","Tulus","https://i.ytimg.com/vi/0iZJ9l9sF5g/hqdefault.jpg"],
+ ["Sial","Mahalini","https://i.ytimg.com/vi/7k7lK9xK4YQ/hqdefault.jpg"],
+ ["Satu Bulan","Bernadya","https://i.ytimg.com/vi/6cGfY4fVf6E/hqdefault.jpg"],
+ ["Die With A Smile","Lady Gaga & Bruno Mars","https://i.ytimg.com/vi/kPa7bsKwL-c/hqdefault.jpg"],
+ ["APT.","ROSÉ & Bruno Mars","https://i.ytimg.com/vi/ekr2nIex040/hqdefault.jpg"],
+ ["Birds of a Feather","Billie Eilish","https://i.ytimg.com/vi/V9PVRfjEBTI/hqdefault.jpg"]
+];
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function render(){
+ document.getElementById("results").innerHTML=results.length?results.map((x,i)=>`
+ <div class="card"><div class="thumb"><img src="${x[2]}" onerror="this.src='https://i.ytimg.com/vi/${x[3]||''}/hqdefault.jpg'"></div>
+ <div class="info"><b>${esc(x[0])}</b><small>${esc(x[1])}</small></div>
+ <button onclick="openYT(${i})">▶ Putar di YouTube</button></div>`).join(""):`<div class="empty">Masukkan kata kunci untuk mencari musik.</div>`;
+ document.getElementById("list").innerHTML=results.slice(0,8).map((x,i)=>`<div class="row"><img class="mini" src="${x[2]}"><div><b>${esc(x[0])}</b><small>${esc(x[1])}</small></div><button onclick="openYT(${i})">▶</button></div>`).join("");
+}
+function ytSearch(q){if(!q.trim())return;document.getElementById("heading").textContent="Hasil untuk: "+q;results=[...seed].filter(x=>(x[0]+" "+x[1]).toLowerCase().includes(q.toLowerCase()));if(!results.length){results=[[q,"Cari di YouTube","https://i.ytimg.com/vi/ScMzIvxBSi4/hqdefault.jpg"]]}render();window.scrollTo({top:300,behavior:"smooth"});}
+function quick(q){document.getElementById("search").value=q;ytSearch(q)}
+function openYT(i){index=i;let x=results[i];document.getElementById("pt").textContent=x[0];document.getElementById("pa").textContent=x[1];document.getElementById("art").innerHTML='<img src="'+x[2]+'">';window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(x[0]+" "+x[1]),"_blank")}
+function playCurrent(){if(index<0&&results.length)index=0;if(index>=0)openYT(index)}
+function next(){if(!results.length)return;index=(index+1)%results.length;openYT(index)}
+function previous(){if(!results.length)return;index=(index-1+results.length)%results.length;openYT(index)}
+function home(){document.getElementById("heading").textContent="Cari musik di YouTube";results=seed;render()}
+home();
+</script>
+</body>
+</html>
